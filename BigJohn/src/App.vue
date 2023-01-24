@@ -86,7 +86,7 @@ import {
   GltfModel,
   AmbientLight,
   PointLight
-} from 'troisjs'
+} from '/troisjs'
 
 export default {
   mounted() {
