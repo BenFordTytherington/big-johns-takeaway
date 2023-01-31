@@ -11,9 +11,24 @@
       @progress="onProgress"
       @error="onError"
           />
-          <AmbientLight intensity="0.5"/>
-          <PointLight :intensity="(Math.random() / 2) + 0.5" :position="{x: 8 * Math.random() - 4, y: 8 * Math.random() - 4, z: 8 * Math.random() - 4}" v-for="_ in 8" />
+          <PointLight 
+          :color="this.getColour()" 
+          :intensity="(Math.random() / 2) + 0.5" 
+          :position="{x: 8 * Math.random() - 4, y: 8 * Math.random() - 4, z: 8 * Math.random() - 4}"
+          :scale="{x: 0.25, y: 0.25, z: 0.25}" 
+          :distance="6"
+          v-for="_ in 16">
+            <Mesh>
+              <SphereGeometry />
+              <PhongMaterial :color="this.getColour()"/>
+            </Mesh>
+          </PointLight>
+          <SpotLight :position="{y: 25}"/>
         </Scene>
+        <EffectComposer>
+          <RenderPass />
+          <UnrealBloomPass :strength="1.5" :exposure="1.3" :threshold="0.4"/>
+        </EffectComposer>
       </Renderer>
     </div>
     <div class="products container">
@@ -85,7 +100,14 @@ import {
   Camera,
   GltfModel,
   AmbientLight,
-  PointLight
+  PointLight,
+  SphereGeometry,
+  Mesh,
+  PhongMaterial,
+SpotLight,
+EffectComposer,
+RenderPass,
+UnrealBloomPass
 } from 'troisjs'
 
 export default {
@@ -94,7 +116,6 @@ export default {
     const orbitC = renderer.three.cameraCtrl;
     orbitC.autoRotate = true;
     orbitC.autoRotateSpeed = 10;
-    orbitC.enabled = false;
 
   },
 
@@ -110,8 +131,15 @@ export default {
     Scene,
     GltfModel,
     AmbientLight,
-    PointLight
-  },
+    PointLight,
+    SphereGeometry,
+    Mesh,
+    PhongMaterial,
+    SpotLight,
+    EffectComposer,
+    RenderPass,
+    UnrealBloomPass
+},
   methods: {
     addProduct(name, price, ID) {
       let quantity = document.getElementById(ID).value;
@@ -122,6 +150,14 @@ export default {
           quantity: quantity
         }
       )
+    },
+
+    getColour() {
+      let r = Math.floor(Math.random() * 256);
+      let g = Math.floor(Math.random() * 256);
+      let b = Math.floor(Math.random() * 256);
+
+      return "#" + r.toString(16) + g.toString(16) + b.toString(16);
     },
 
     placeOrder() {
